@@ -1,19 +1,30 @@
+<?php
+require_once '../../app/db.php';
+
+// Connect to MongoDB
+$db = connectMongoDB();
+$collection = $db->Category;
+
+// Fetch all categories
+$categories = $collection->find();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News Website</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
+    <title>Navbar</title>
 </head>
 
 <body>
-    <!-- Navbar -->
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">
+            <a class="navbar-brand fw-bold" href="index.php">
                 <img src="../assets/images/LogoNews.png" alt="Logo" style="max-height: 40px;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -21,15 +32,28 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav m-auto my-3">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">World</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Technology</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Politics</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Category </a>
+                        <ul class="dropdown-menu">
+                            <?php if ($categories): ?>
+                                <?php foreach ($categories as $category): ?>
+                                    <li><a class="dropdown-item" href="news.php?category=<?= htmlspecialchars($category['_id']) ?>"><?= htmlspecialchars($category['name']) ?></a></li>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <li>
+                                    <p class="dropdown-item">No categories found.</p>
+                                </li>
+                            <?php endif; ?>
+                        </ul>
+                    </li>
                 </ul>
                 <form class="d-flex ms-3" action="/search" method="GET">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
                     <button class="btn btn-outline-light" type="submit">Search</button>
                 </form>
             </div>
         </div>
     </nav>
+</body>
+
+</html>

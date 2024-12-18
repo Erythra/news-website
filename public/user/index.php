@@ -13,6 +13,10 @@
 
     $categoryList = $categoryCollection->find([]);
     $categoryArray = iterator_to_array($categoryList);
+    $categoryMap = [];
+    foreach ($categoryArray as $category) {
+        $categoryMap[(string)$category['_id']] = $category['name'];
+    }
     ?>
 
     <!-- CAROUSEL -->
@@ -84,7 +88,6 @@
                 <?php
                 $newsArrayLimited = array_slice($newsArray, 0, 6);
                 ?>
-
                 <?php foreach ($newsArrayLimited as $news): ?>
                     <div class="col-md-4">
                         <div class="card card-margin">
@@ -97,6 +100,9 @@
                             <div class="card">
                                 <h5 class="card-title"><?= htmlspecialchars($news['title']) ?></h5>
                                 <p class="card-text"><?= htmlspecialchars($news['summary']) ?></p>
+                                <a href="news.php?category=<?= htmlspecialchars($news['category']) ?>">
+                                    <div class="w-25"><span class="badge text-bg-secondary"><?= htmlspecialchars($categoryMap[(string)$news['category']] ?? 'Uncategorized') ?></span></div>
+                                </a>
                                 <p class="text-muted">
                                     <small>
                                         Published:
