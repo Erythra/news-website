@@ -34,9 +34,3 @@
         <input type="text" class="form-control" id="author" name="author" required>
     </div>
 </div>
-<div class="row mb-3">
-    <div class="col-2">Image URL</div>
-    <div class="col-10">
-        <input type="text" class="form-control" id="imgUrl" name="imgUrl" required>
-    </div>
-</div>
