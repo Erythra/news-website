@@ -1,7 +1,7 @@
 <div class="row mb-3">
     <div class="col-2">Title</div>
     <div class="col-10">
-        <input type="text" class="form-control" id="judul" name="judul" required>
+        <input type="text" class="form-control" id="title" name="title" required>
     </div>
 </div>
 <div class="row mb-3">
@@ -37,6 +37,6 @@
 <div class="row mb-3">
     <div class="col-2">Image URL</div>
     <div class="col-10">
-        <input type="text" class="form-control" id="imgUrl" name="imgUrl" required>
+        <input type="text" class="form-control" id="image" name="image" required>
     </div>
 </div>

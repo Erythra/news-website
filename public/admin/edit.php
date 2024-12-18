@@ -28,21 +28,26 @@ if (isset($_GET['id'])) {
 
 // Handle Update Request
 if (isset($_POST['update'])) {
+    // Collect new data from the form
     $updatedNews = [
         'title' => $_POST['title'],
         'content' => $_POST['content'],
         'author' => $_POST['author'],
-        'summary' => $_POST['summary'], 
+        'summary' => $_POST['summary'], // New summary field
     ];
 
+    // Handle image link input
     if (!empty($_POST['image_url'])) {
-        $updatedNews['image'] = $_POST['image_url']; 
+        $updatedNews['image'] = $_POST['image_url']; // Save the image URL
     }
 
+    // Update the news item in the MongoDB collection
     $collection->updateOne(
         ['_id' => new MongoDB\BSON\ObjectId($newsId)],
         ['$set' => $updatedNews]
     );
+
+    // Redirect back to the list-news page after update
     header("Location: list-news.php");
     exit;
 }

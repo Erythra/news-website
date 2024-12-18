@@ -8,7 +8,7 @@
        </div>
        <div class="collapse navbar-collapse ms-3" id="navbarNav">
            <ul class="navbar-nav me-auto">
-               <li class="nav-item fw-bold fs-4">
+               <li class="nav-item text-dark fw-bold fs-4">
                    <?php
                     if ($currentPage == 'dashboard.php') {
                         echo 'Dashboard';
@@ -37,7 +37,7 @@
                        </div>
                    </a>
                    <ul class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
-                       <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
+                       <li><a class="dropdown-item text-danger" href="logout.php">Logout</a></li>
                    </ul>
                </li>
            </ul>
