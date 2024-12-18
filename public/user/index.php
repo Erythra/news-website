@@ -31,7 +31,12 @@
                 <?php foreach ($latestNews as $index => $news): ?>
                     <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
                         <div class="carousel-image-container position-relative">
-                            <img src="<?= htmlspecialchars($news['image'] ?? '/api/placeholder/800/400') ?>" class="d-block w-100" alt="<?= htmlspecialchars($news['title']) ?>" style="height: auto; object-fit: cover;">
+                            <?php
+                            $imagePath = $news['image'] ?? '/api/placeholder/800/400';
+
+                            $imageSrc = strpos($imagePath, '/uploads/') === 0 ? '/news-website' . $imagePath : $imagePath;
+                            ?>
+                            <img src="<?= htmlspecialchars($imageSrc) ?>" class="d-block w-100" alt="<?= htmlspecialchars($news['title']) ?>" style="height: auto; object-fit: cover;">
 
                             <div class="overlay"></div>
                         </div>
@@ -91,18 +96,41 @@
                 <?php foreach ($newsArrayLimited as $news): ?>
                     <div class="col-md-4">
                         <div class="card card-margin">
-                            <?php if (!empty($news['image'])): ?>
-                                <img src="<?= htmlspecialchars($news['image']) ?>" class="card-img-top" alt="News Image">
+                            <?php
+                            $imagePath = $news['image'];
+
+                            // Cek apakah image adalah URL atau path relatif
+                            if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
+                                // Jika sudah berupa URL penuh, gunakan langsung
+                                $imageSrc = $imagePath;
+                            } else {
+                                // Jika hanya path relatif, tambahkan base URL yang mengarah ke folder public
+                                $imageSrc = '/news-website/' . ltrim($imagePath, '/');
+                            }
+                            ?>
+                            <?php if (!empty($imageSrc)): ?>
+                                <img src="<?= htmlspecialchars($imageSrc) ?>" class="card-img-top" alt="News Image">
                             <?php else: ?>
                                 <img src="/api/placeholder/400/250" class="card-img-top" alt="Placeholder Image">
                             <?php endif; ?>
 
                             <div class="card">
                                 <h5 class="card-title"><?= htmlspecialchars($news['title']) ?></h5>
-                                <p class="card-text"><?= htmlspecialchars($news['summary']) ?></p>
+
+                                <?php
+                                $summary = htmlspecialchars($news['summary']);
+                                $maxLength = 100;
+
+                                if (strlen($summary) > $maxLength) {
+                                    $summary = substr($summary, 0, $maxLength) . '...'; // Truncate dengan elipsis
+                                }
+                                ?>
+                                <p class="card-text"><?= $summary ?></p>
+
                                 <a href="news.php?category=<?= htmlspecialchars($news['category']) ?>">
                                     <div class="w-25"><span class="badge text-bg-secondary"><?= htmlspecialchars($categoryMap[(string)$news['category']] ?? 'Uncategorized') ?></span></div>
                                 </a>
+
                                 <p class="text-muted">
                                     <small>
                                         Published:
@@ -124,6 +152,7 @@
                                         ?>
                                     </small>
                                 </p>
+
                                 <a href="detail.php?id=<?= $news['_id'] ?>" class="btn btn-custom btn-sm">Continue Reading</a>
                             </div>
                         </div>

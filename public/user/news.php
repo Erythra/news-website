@@ -67,7 +67,7 @@ $categories = $categoryCollection->find();
             </div>
         </div>
     </nav>
-    
+
     <div class="container content">
         <div class="d-flex align-items-center my-5">
             <div class="flex-grow-1 border-top border-2"></div>
@@ -82,10 +82,27 @@ $categories = $categoryCollection->find();
                 <?php foreach ($newsArray as $news): ?>
                     <div class="col-md-6">
                         <div class="card card-margin">
-                            <img src="<?= !empty($news['image']) ? htmlspecialchars($news['image']) : '/api/placeholder/400/250' ?>" class="card-img-top" alt="News Image">
+                            <?php
+                            $imagePath = !empty($news['image']) ? $news['image'] : null;
+
+                            if ($imagePath && strpos($imagePath, '/uploads/') === 0) {
+                                $imageSrc = '/news-website' . $imagePath;
+                            } else {
+                                $imageSrc = $imagePath;
+                            }
+                            ?>
+                            <img src="<?= htmlspecialchars($imageSrc ?? '/api/placeholder/400/250') ?>" class="card-img-top" alt="News Image">
                             <div class="card-body">
                                 <h5 class="card-title"><?= htmlspecialchars($news['title']) ?></h5>
-                                <p class="card-text"><?= htmlspecialchars($news['summary']) ?></p>
+                                <?php
+                                $summary = htmlspecialchars($news['summary']);
+                                $maxLength = 100;
+
+                                if (strlen($summary) > $maxLength) {
+                                    $summary = substr($summary, 0, $maxLength) . '...';
+                                }
+                                ?>
+                                <p class="card-text"><?= $summary ?></p>
                                 <p class="text-muted">
                                     <small>
                                         Published:
