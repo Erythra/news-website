@@ -9,40 +9,63 @@ if (!isset($_SESSION['admin'])) {
     exit;
 }
 
-
 // Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $db = connectMongoDB();
-    $collection = $db->NewsOne;
+if (isset($_POST['submit'])) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $db = connectMongoDB();
+        $collection = $db->NewsOne;
 
-    // Get form data
-    $title = $_POST['title'];
-    $content = $_POST['content'];
-    $summary = $_POST['summary'];
-    $category = $_POST['category'];
-    $author = $_POST['author'];
-    $image = $_POST['image'];
+        // Get form data
+        $title = $_POST['title'];
+        $content = $_POST['content'];
+        $summary = $_POST['summary'];
+        $category = $_POST['category'];
+        $author = $_POST['author'];
 
-    $document = [
-        'title' => $title,
-        'content' => $content,
-        'summary' => $summary,
-        'category' => $category,
-        'author' => $author,
-        'image' => $image,
-        'created_at' => new MongoDB\BSON\UTCDateTime(),
-        'updated_at' => new MongoDB\BSON\UTCDateTime()
-    ];
+        // Handle file upload
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = '../../uploads/';
+            $fileName = basename($_FILES['image']['name']);
+            $uploadFile = $uploadDir . $fileName;
 
-    // Insert the document into the collection
-    $result = $collection->insertOne($document);
+            // Ensure the upload directory exists
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
 
-    // Check if the insert was successful
-    if ($result->getInsertedCount() > 0) {
-        header("Location: list-news.php"); // Redirect to the news list page
-        exit;
-    } else {
-        $error = "Failed to add news.";
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
+                $image = $uploadFile; // Save the file path to the database
+            } else {
+                $error = "Failed to upload image.";
+            }
+        } else {
+            $error = "No image file uploaded.";
+        }
+
+        
+        if (!isset($error)) {
+            $document = [
+                'title' => $title,
+                'content' => $content,
+                'summary' => $summary,
+                'category' => $category,
+                'author' => $author,
+                'image' => $image,
+                'created_at' => new MongoDB\BSON\UTCDateTime(),
+                'updated_at' => new MongoDB\BSON\UTCDateTime()
+            ];
+
+            // Insert the document into the collection
+            $result = $collection->insertOne($document);
+
+            // Check if the insert was successful
+            if ($result->getInsertedCount() > 0) {
+                header("Location: list-news.php"); // Redirect to the news list page
+                exit;
+            } else {
+                $error = "Failed to add news.";
+            }
+        }
     }
 }
 ?>
@@ -64,55 +87,22 @@ include '../partials/cdn.php';
 
         <div class="flex-grow-1 p-4">
             <p class="text-muted">Let's share the latest update, Admin!</p>
-            <form action="" method="POST">
-                <div class="container">
-                    <div class="row mb-3">
-                        <div class="col-2">Title</div>
-                        <div class="col-10">
-                            <input type="text" class="form-control" id="title" name="title" required>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-2">Content</div>
-                        <div class="col-10">
-                            <textarea type="text" class="form-control" id="content" name="content" rows="3" required></textarea>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-2">Summary</div>
-                        <div class="col-10">
-                            <input type="text" class="form-control" id="summary" name="summary" required>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-2">Category</div>
-                        <div class="col-10">
-                            <select class="form-control" id="category" name="category" required>
-                                <option value="teknologi">Teknologi</option>
-                                <option value="politik">Politik</option>
-                                <option value="olahraga">Olahraga</option>
-                                <option value="kesehatan">Kesehatan</option>
-                                <option value="hiburan">Hiburan</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-2">Author</div>
-                        <div class="col-10">
-                            <input type="text" class="form-control" id="author" name="author" required>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-2">Image URL</div>
-                        <div class="col-10">
-                            <input type="text" class="form-control" id="image" name="image" required>
-                        </div>
+
+            <div class="container">
+                <form action="" method="post" enctype="multipart/form-data">
+
+                    <?php
+                    include '../partials/form.php';
+                    ?>
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Upload Image</label>
+                        <input type="file" class="form-control" name="image" id="image" required>
                     </div>
                     <div class="d-flex justify-content-end mb-4">
-                        <button type="submit" class="btn btn-dark">Create</button>
+                        <button type="submit" class="btn btn-dark" name="submit">Create</button>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </body>
