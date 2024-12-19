@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <head>
     <?php
-        include '../partials/cdn.php';
+    include '../partials/cdn.php';
     ?>
     <title>Admin Login</title>
 </head>
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="POST">
         <div class="d-flex align-items-center justify-content-center" style="min-height: 100vh; background-color: #f8f9fa;">
             <div class="card p-5 shadow-lg" style="width: 28rem;">
-                <div class="text-center mb-4 text-uppercase fw-bold fs-2">Polinews Login</div>
+                <div class="text-center mb-4 text-uppercase fw-bold fs-2">Newsphere Login</div>
                 <form method="POST">
                     <input type="text" class="form-control border-0 border-bottom border-1 rounded-0 border-dark mb-3" id="username" name="username" placeholder="Nama Pengguna" required>
                     <input type="password" class="form-control border-0 border-bottom border-1 rounded-0 border-dark mb-3" id="password" name="password" placeholder="Kata Sandi" required>
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="justify-content-start">
                             <input class="form-check-input" type="checkbox" value="" id="remindCheckBox">
                             <label class="form-check-label text-muted" for="remindCheckBox">
-                                Ingat saya
+                                Remember me
                             </label>
                         </div>
                         <div class="text-end">
@@ -59,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <button type="submit" class="btn btn-dark w-100 rounded-0">Masuk</button>
                 </form>
             </div>
-              
         </div>
 
     </form>

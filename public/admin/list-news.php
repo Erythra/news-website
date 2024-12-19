@@ -10,6 +10,12 @@ if (!isset($_SESSION['admin'])) {
 $db = connectMongoDB();
 $newsCollection = $db->NewsOne;
 $categoryCollection = $db->Category;
+$categoryList = $categoryCollection->find([]);
+$categoryArray = iterator_to_array($categoryList);
+$categoryMap = [];
+foreach ($categoryArray as $category) {
+    $categoryMap[(string)$category['_id']] = $category['name'];
+}
 
 function sanitizeInput($input)
 {
@@ -269,7 +275,7 @@ include '../partials/cdn.php';
                                     <td><?= htmlspecialchars($news['title']) ?></td>
                                     <td><?= htmlspecialchars($news['author']) ?></td>
                                     <td>
-                                        <?= htmlspecialchars($news['categoryDetails']['name'] ?? 'Tanpa Kategori') ?>
+                                        <?= htmlspecialchars($categoryMap[(string)$news['category']] ?? 'Uncategorized') ?>
                                     </td>
                                     <td>
                                         <?= date(

@@ -13,6 +13,7 @@
 
     $categoryList = $categoryCollection->find([]);
     $categoryArray = iterator_to_array($categoryList);
+
     $categoryMap = [];
     foreach ($categoryArray as $category) {
         $categoryMap[(string)$category['_id']] = $category['name'];
@@ -171,16 +172,18 @@
             <div class="row">
                 <?php foreach ($categoryArray as $category): ?>
                     <div class="col-md-3">
-                        <div class="category-card">
-                            <?php if (!empty($category['image_url'])): ?>
-                                <img src="<?= htmlspecialchars($category['image_url']) ?>" alt="Category Image" class="category-image">
-                            <?php else: ?>
-                                <img src="https://via.placeholder.com/400x300" alt="Placeholder Image" class="category-image">
-                            <?php endif; ?>
-                            <div class="category-overlay">
-                                <h5 class="category-title"><?= htmlspecialchars($category['name']) ?></h5>
+                        <a href="news.php?category=<?= htmlspecialchars($category['_id']) ?>">
+                            <div class="category-card">
+                                <?php if (!empty($category['image_url'])): ?>
+                                    <img src="<?= htmlspecialchars($category['image_url']) ?>" alt="Category Image" class="category-image">
+                                <?php else: ?>
+                                    <img src="https://via.placeholder.com/400x300" alt="Placeholder Image" class="category-image">
+                                <?php endif; ?>
+                                <div class="category-overlay">
+                                    <h5 class="category-title"><?= htmlspecialchars($category['name']) ?></h5>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 <?php endforeach; ?>
             </div>

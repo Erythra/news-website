@@ -8,6 +8,7 @@ $db = connectMongoDB();
 $categoryCollection = $db->Category;
 $categoryList = $categoryCollection->find([]);
 $categoryArray = iterator_to_array($categoryList);
+$categories = $categoryCollection->find();
 
 // Fetch news details
 $newsCollection = $db->NewsOne;
@@ -70,13 +71,18 @@ $comments = $NewsOne['comments'] ?? [];
         <div class="col-md-3 align-self-start" style="background-color: #f5f5f5; border-radius: 1rem; width: 15%; padding-bottom: 2rem;">
             <h4 style="padding: 1rem; font-weight: bolder;">Category</h4>
             <ul class="list-group">
-                <?php foreach ($categoryArray as $cat): ?>
-                    <li class="list-group-item" style="border: 0 !important; background-color: #f5f5f5 !important;">
-                        <a href="#" style="color: #949494; text-decoration: none; font-weight: bold;">
-                            <?php echo htmlspecialchars($cat['name']); ?>
-                        </a>
+                <?php if ($categories): ?>
+                    <?php foreach ($categories as $cat): ?>
+                        <li class="list-group-item" style="border: 0 !important; background-color: #f5f5f5 !important;">
+                            <a class="dropdown-item" href="news.php?category=<?= htmlspecialchars($cat['_id']) ?>"><?= htmlspecialchars($cat['name']) ?></a>
+                        </li>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <li>
+                        <p class="dropdown-item">No categories found.</p>
                     </li>
-                <?php endforeach; ?>
+                <?php endif; ?>
+
             </ul>
         </div>
 
