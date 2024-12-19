@@ -49,7 +49,7 @@ $categories = $collection->find();
                     </li>
                 </ul>
                 <form class="d-flex ms-3" action="/search" method="GET">
-                    <button class="btn btn-outline-light" type="submit">Search</button>
+                    <a href="search.php" class="btn btn-outline-light">Search</a>
                 </form>
             </div>
         </div>

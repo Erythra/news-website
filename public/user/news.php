@@ -35,38 +35,7 @@ $categories = $categoryCollection->find();
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="index.php">
-                <img src="../assets/images/LogoNews.png" alt="Logo" style="max-height: 40px;">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav m-auto my-3">
-                    <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Category </a>
-                        <ul class="dropdown-menu">
-                            <?php if ($categories): ?>
-                                <?php foreach ($categories as $category): ?>
-                                    <li><a class="dropdown-item" href="news.php?category=<?= htmlspecialchars($category['_id']) ?>"><?= htmlspecialchars($category['name']) ?></a></li>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <li>
-                                    <p class="dropdown-item">No categories found.</p>
-                                </li>
-                            <?php endif; ?>
-                        </ul>
-                    </li>
-                </ul>
-                <form class="d-flex ms-3" action="/search" method="GET">
-                    <button class="btn btn-outline-light" type="submit">Search</button>
-                </form>
-            </div>
-        </div>
-    </nav>
+    <?php include 'partials/header.php' ?>
 
     <div class="container content">
         <div class="d-flex align-items-center my-5">
