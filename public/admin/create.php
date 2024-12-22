@@ -25,7 +25,6 @@ try {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Validasi input
         $title = trim($_POST['title']);
         $content = trim($_POST['content']);
         $summary = trim($_POST['summary']);
@@ -53,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $uploadFile = $uploadDir . $fileName;
 
             if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadFile)) {
-                $image = '/uploads/' . $fileName; // Simpan path relatif
+                $image = '/uploads/' . $fileName;
             } else {
                 throw new Exception("Gagal mengupload gambar.");
             }
@@ -61,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Tidak ada gambar yang diupload.");
         }
 
-        // Siapkan data untuk disimpan
         $newsData = [
             'title' => $title,
             'content' => $content,

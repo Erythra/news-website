@@ -1,24 +1,19 @@
 <?php
-require_once '../../app/db.php'; // Include database connection
+require_once '../../app/db.php';
 
-// Start session to check if the admin is logged in
 session_start();
 if (!isset($_SESSION['admin'])) {
     header("Location: login.php");
     exit;
 }
 
-// Connect to MongoDB
 $db = connectMongoDB();
-$collection = $db->NewsOne; // Name of the collection
+$collection = $db->NewsOne;
 
-// Handle Edit Request
 if (isset($_GET['id'])) {
     $newsId = $_GET['id'];
 
-    // Validate if the ObjectId is a valid 24-character hex string
     if (preg_match('/^[a-f0-9]{24}$/', $newsId)) {
-        // Fetch the news item from the MongoDB collection
         $news = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($newsId)]);
     } else {
         echo "Invalid ObjectId format.";
@@ -26,28 +21,32 @@ if (isset($_GET['id'])) {
     }
 }
 
-// Handle Update Request
 if (isset($_POST['update'])) {
-    // Collect new data from the form
     $updatedNews = [
         'title' => $_POST['title'],
         'content' => $_POST['content'],
         'author' => $_POST['author'],
-        'summary' => $_POST['summary'], // New summary field
+        'summary' => $_POST['summary'],
     ];
 
-    // Handle image link input
-    if (!empty($_POST['image_url'])) {
-        $updatedNews['image'] = $_POST['image_url']; // Save the image URL
+    if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
+        $targetDir = 'uploads/';
+        $targetFile = $targetDir . basename($_FILES['image_file']['name']);
+
+        if (move_uploaded_file($_FILES['image_file']['tmp_name'], $targetFile)) {
+            $news['image'] = $targetFile;
+        }
     }
 
-    // Update the news item in the MongoDB collection
+    if (!empty($_POST['image_url'])) {
+        $news['image'] = $_POST['image_url'];
+    }
+
     $collection->updateOne(
         ['_id' => new MongoDB\BSON\ObjectId($newsId)],
         ['$set' => $updatedNews]
     );
 
-    // Redirect back to the list-news page after update
     header("Location: list-news.php");
     exit;
 }
@@ -197,17 +196,35 @@ if (isset($_POST['update'])) {
                 </div>
 
                 <div class="form-group">
-                    <label for="image_url">Image URL</label>
+                    <label for="image_url">Image URL (Optional)</label>
                     <input type="text" id="image_url" name="image_url"
                         value="<?= htmlspecialchars($news['image'] ?? '') ?>"
                         placeholder="Optional image URL">
+                </div>
+
+                <div class="form-group">
+                    <label for="image_file">Choose Image (Optional)</label>
+                    <input type="file" id="image_file" name="image_file" accept="image/*">
                 </div>
 
                 <?php if (!empty($news['image'])): ?>
                     <div class="form-group">
                         <label>Current Image</label>
                         <img src="<?= htmlspecialchars($news['image']) ?>"
-                            alt="Current Image" class="image-preview">
+                            alt="Current Image" class="image-preview" style="max-width: 100%; height: auto;">
+                    </div>
+                <?php endif; ?>
+
+                <?php
+                $imagePath = $news['image'] ?? '/api/placeholder/800/400';
+
+                $imageSrc = strpos($imagePath, '/uploads/') === 0 ? '/news-website' . $imagePath : $imagePath;
+
+                if (!empty($news['image'])):
+                ?>
+                    <div class="form-group">
+                        <label>Current Image</label>
+                        <img src="<?= htmlspecialchars($imageSrc) ?>" alt="Current Image" class="image-preview">
                     </div>
                 <?php endif; ?>
 

@@ -75,7 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-// Proses penghapusan berita
 if (isset($_GET['delete'])) {
     try {
         $newsId = sanitizeInput($_GET['delete']);
@@ -96,7 +95,6 @@ if (isset($_GET['delete'])) {
     }
 }
 
-// Pipeline aggregation
 $pipeline = [
     !empty($filter) ? ['$match' => $filter] : [],
     [
@@ -131,7 +129,6 @@ $pipeline = [
 $pipeline = array_filter($pipeline);
 $pipeline = array_values($pipeline);
 
-// Eksekusi aggregation
 try {
     $newsList = $newsCollection->aggregate($pipeline);
     if ($newsList) {

@@ -8,12 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $collection = $db->admin_login;
 
     $username = $_POST['username'];
-    $password = trim($_POST['password']); // User input password
+    $password = trim($_POST['password']);
 
-    // Fetch the admin from MongoDB based on username
     $admin = $collection->findOne(['username' => $username]);
 
-    // Directly compare the password (no hashing)
     if ($admin && $password === $admin['password']) {
         $_SESSION['admin'] = $admin['username'];
         header("Location: ./dashboard.php");

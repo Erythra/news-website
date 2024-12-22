@@ -1,17 +1,14 @@
 <?php
 require_once '../../app/db.php';
 
-// Connect to MongoDB
 $db = connectMongoDB();
 $newsCollection = $db->NewsOne;
 $categoryCollection = $db->Category;
 
-// Fetch news articles based on selected category
 $categoryFilter = isset($_GET['category']) ? new MongoDB\BSON\ObjectId($_GET['category']) : null;
 $newsList = $newsCollection->find($categoryFilter ? ['category' => $categoryFilter] : [], ['sort' => ['created_at' => -1]]);
 $newsArray = iterator_to_array($newsList);
 
-// Fetch the category name based on the selected category
 $categoryName = null;
 if ($categoryFilter) {
     $category = $categoryCollection->findOne(['_id' => $categoryFilter]);
